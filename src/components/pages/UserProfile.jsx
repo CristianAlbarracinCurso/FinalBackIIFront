@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import API from "../../api/api";
+import axios from "axios"; // Reemplaza API por axios directamente si no tienes una configuración personalizada.
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
@@ -9,17 +9,25 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await API.get("/current");
-        setUser(response.data.user);
-        setError(null);
+        // Realizar la solicitud al endpoint `/current`
+        const response = await axios.get("/api/current", {
+          withCredentials: true, // Asegura que las cookies se envíen si usas JWT en cookies.
+        });
+        setUser(response.data.user); // Guarda los datos del usuario.
+        setError(null); // Limpia los errores.
       } catch (error) {
-        setError("No autenticado. Por favor, inicia sesión.");
+        // Manejo del error según el estado de la respuesta.
+        if (error.response && error.response.status === 401) {
+          setError("No autenticado. Por favor, inicia sesión.");
+        } else {
+          setError("Error al cargar los datos del usuario.");
+        }
       } finally {
-        setLoading(false);
+        setLoading(false); // Finaliza la carga.
       }
     };
 
-    fetchUser();
+    fetchUser(); // Llamada inicial.
   }, []);
 
   if (loading) {
@@ -45,14 +53,14 @@ const UserProfile = () => {
       </h2>
       <div className="text-gray-600">
         <p className="mb-2">
-          <span className="font-semibold">Nombre:</span> {user.first_name}{" "}
-          {user.last_name}
+          <span className="font-semibold">Nombre:</span>{" "}
+          {user?.first_name} {user?.last_name}
         </p>
         <p className="mb-2">
-          <span className="font-semibold">Correo:</span> {user.email}
+          <span className="font-semibold">Correo:</span> {user?.email}
         </p>
         <p>
-          <span className="font-semibold">Edad:</span> {user.age}
+          <span className="font-semibold">Edad:</span> {user?.age || "No disponible"}
         </p>
       </div>
     </div>

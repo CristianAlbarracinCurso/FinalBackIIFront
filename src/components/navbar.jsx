@@ -13,8 +13,15 @@ const Navbar = () => {
             Iniciar sesión
           </Link>
           <Link to="/profile" className="text-white hover:text-blue-400">
-            Profile
+            current
           </Link>
+          <Link to="/private-header" className="text-white hover:text-blue-400">
+            current header
+          </Link>
+          <Link to="/private-cookies" className="text-white hover:text-blue-400">
+            Profile cookie
+          </Link>
+
           <Link to="/register" className="text-white hover:text-blue-400">
             Registrarse
           </Link>
